@@ -1,9 +1,6 @@
+require('dotenv').config()
 const mongoose = require("mongoose");
-mongoose.set("strictQuery", true);
 mongoose
-  .connect("mongodb://127.0.0.1:27017/EcommerceDB", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.db_Uri)
   .then(() => console.log("successful"))
   .catch((err) => console.log(err));
