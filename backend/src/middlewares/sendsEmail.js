@@ -1,10 +1,11 @@
+require('dotenv').config();
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 const generateToken = require('./generateToken');
 const client = require('../client');
 
 // SendinBlue setup
 const sendinblue = new SibApiV3Sdk.TransactionalEmailsApi();
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = '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';
+SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.sendInBlueApiKey;
 
 // function for create contact in brevo
 const apiInstance = new SibApiV3Sdk.ContactsApi();
