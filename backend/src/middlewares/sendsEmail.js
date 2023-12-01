@@ -1,11 +1,10 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 const generateToken = require('./generateToken');
 const client = require('../client');
-const { ContactsApi, Contact } = require('@getbrevo/brevo');
 
 // SendinBlue setup
 const sendinblue = new SibApiV3Sdk.TransactionalEmailsApi();
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = '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';
+SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = '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';
 
 // function for create contact in brevo
 const apiInstance = new SibApiV3Sdk.ContactsApi();
@@ -28,7 +27,7 @@ const sendVerificationEmail = async (UserData, verificationToken) => {
   sendinblueData.to = [{ email: email }];
   sendinblueData.templateId = 1;
   sendinblueData.params = {
-    verification_link: `http://api/users/verifyemail/${verificationToken}`
+    verification_link: `http://localhost:3000/api/users/verifyemail/${verificationToken}`
   };
 
   try {
@@ -48,7 +47,7 @@ const sendsEmail = async (UserData, res) => {
     // Generate verification token and set it in Redis
     const email = UserData.email;
     const verificationToken = await generateToken(email);
-    client.setex(verificationToken, 300, JSON.stringify({ UserData }));
+    client.setex(verificationToken, 30000, JSON.stringify({ UserData }));
 
     // Send verification email
     await sendVerificationEmail(UserData, verificationToken);
