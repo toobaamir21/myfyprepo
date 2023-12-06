@@ -1,5 +1,4 @@
 FROM node:17-alpine
-FROM mongo-express
 
 RUN npm install -g nodemon
 WORKDIR /app
@@ -10,6 +9,8 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8000
-
+# EXPOSE 5000
+# EXPOSE 27017
+# COPY redis.conf /usr/local/etc/redis/redis.conf
+# CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
 ENTRYPOINT [ "npm","run","dev" ]

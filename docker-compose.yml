@@ -1,13 +1,48 @@
 version: "3.8"
 services:
+
+  mongo:
+    container_name: cont-ecommerce
+    image: mongo:latest
+    # ports:
+    #   - "2717:27017"
+    restart: always
+    volumes:
+      - mongo:/data/db
+
+  redis:
+    container_name: redis-stack-container
+    image: redis/redis-stack
+    ports:
+      - 6379:6379
+      - 8001:8001
+      
+    restart: always
+    volumes:
+      - redis_db:/data   
   myapi:
+    # tty: true
+    # stdin_open: true 
     build: ./backend
     container_name: ecommerce_c
     ports:
-      - '8000:8000'
-
+      - '8000:5000'
+    
     volumes:
       - ./backend:/app
-      # - ./app/node_modules  
+      # - ./app/node_modules 
+    environment:
+       MONGODB_URI: mongodb://mongo:27017/EcommerceDB 
+    depends_on:
+      - mongo
+      - redis
+
+volumes:
+  mongo: {}   
+  redis_db:
+
+ 
+
+ 
 
  
