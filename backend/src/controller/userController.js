@@ -1,4 +1,5 @@
-const User = require("../model/User");
+require('dotenv').config()
+const User = require("../model/userModels/User");
 const { sendsEmail, sendsResetPassword } = require("../middlewares/sendsEmail");
 const client = require("../client");
 const generateToken = require("../middlewares/generateToken");
@@ -35,14 +36,7 @@ const verifyEmailAndSavesDataToDb = async (req, res) => {
         if (data) {
           const deleteFromRedis = await client.getdel(token);
           console.log(`deleted : ${deleteFromRedis}`);
-          res.status(201).json({
-            fname: data.fname,
-            lname: data.lname,
-            phone: data.phone,
-            role: data.role,
-            email: data.email,
-            accessToken: await generateToken(data._id),
-          });
+          res.status(201).json({Message:"please navigate to login page"});
         } else {
           res.status(500).json({ msg: "Error Occured in create user in db" });
         }
@@ -74,10 +68,10 @@ const authUser = async (req, res) => {
           phone: data.phone,
           role: data.role,
           email: data.email,
-          accessToken: await generateToken(data._id),
+          accessToken: await generateToken(data._id,'604800s'),
         });
       } else {
-        res.status(404).json({ msg: "Email or Password is not correct" });
+        res.status(404).json({ msg: "Invalid email or password" });
       }
     }
   } catch (err) {
@@ -101,19 +95,40 @@ const forgetPassword = async (req, res) => {
   }
 };
 
+const showReset = async (req,res)=>{
+  try{
+    const token = req.params.token;
+    const verifyToken = await jwt.verify(token,process.env.jwtKey);
+    if(!verifyToken){
+      res.status(500).json({error:"Token has been expired"})
+    }else{
+      res.status(200).json({message:"show password reset page"})
+    }
+  }catch(err){
+    console.log(err);
+    res.status(500).json({ErrorMessage:err.message})
+  }
+}
+
 const handleReset = async (req, res) => {
   try {
-    const token = req.params.token;
+    const {token} = req.query;
+    console.log(typeof(token));
     const {password} = req.body;
     const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password,salt)
-    const decoded = await jwt.decode(token)
-    // console.log(`decoded : ${decoded.id}`);
-    if(decoded && hashPassword){
-      const email = decoded.id
-      console.log(`email : ${email}`);
-      const user = await User.findOneAndUpdate({email},{password:hashPassword},{new:true})
-      res.status(201).json({user})
+    const verifyToken = await jwt.verify(token,process.env.jwtKey);
+    if(!verifyToken){
+      res.status(500).json({error:"Invalid or expired token"})
+    }else{
+      const decoded = await jwt.decode(token)
+      // console.log(`decoded : ${decoded.id}`);
+      if(decoded && hashPassword){
+        const email = decoded.id
+        console.log(`email : ${email}`);
+        const user = await User.findOneAndUpdate({email},{password:hashPassword},{new:true})
+        res.status(201).json({user})
+      }
     }
   } catch (err) {
     console.log(err.message);
@@ -127,4 +142,5 @@ module.exports = {
   authUser,
   forgetPassword,
   handleReset,
+  showReset
 };

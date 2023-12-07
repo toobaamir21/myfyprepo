@@ -5,11 +5,11 @@ const client = require('../client');
 
 // SendinBlue setup
 const sendinblue = new SibApiV3Sdk.TransactionalEmailsApi();
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.sendInBlueApiKey; //yaha wo key use krni h jo send ki thi
+SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.sendInBlueApiKey; // jo key send ki h usy .env p dal dyna
 
-// function for create contact in brevo
 const apiInstance = new SibApiV3Sdk.ContactsApi();
 
+/******************************function for add contacts to brevo***********************/
 const addContactToBrevo = async (userData) => {
     let createContact = new SibApiV3Sdk.CreateContact();
     const email = userData.email
@@ -22,6 +22,7 @@ const addContactToBrevo = async (userData) => {
     });
 };
 
+/******************************function for sends email***********************/
 const sendVerificationEmail = async (UserData,link,templateId) => {
   const email = UserData.email;
   const sendinblueData = new SibApiV3Sdk.SendSmtpEmail();
@@ -40,6 +41,7 @@ const sendVerificationEmail = async (UserData,link,templateId) => {
   }
 };
 
+/******************************function for email confirmation***********************/
 const sendsEmail = async (UserData, res) => {
   try {
     // Add contact to Brevo
@@ -47,28 +49,32 @@ const sendsEmail = async (UserData, res) => {
 
     // Generate verification token and set it in Redis
     const email = UserData.email;
-    const verificationToken = await generateToken(email);
-    client.setex(verificationToken, 30000, JSON.stringify({ UserData }));
+    const verificationToken = await generateToken(email,'7200s');
+    await client.setex(verificationToken, 7200, JSON.stringify({ UserData }));
     const link = `http://localhost:3000/api/users/verifyemail/${verificationToken}`
     const templateId = 1
 
     // Send verification email
     await sendVerificationEmail(UserData,link,templateId);
 
-    res.json({ message: 'Contact added to Brevo, and email sent for verification' });
+    res.json({ message: 'Please check your email' });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Failed to process request' });
   }
 };
 
+/******************************function for paswword reset***********************/
 const sendsResetPassword = async (UserData, res) => {
   try {
     // Generate verification token and set it in Redis
     const email = UserData.email;
     console.log(`testing : ${email}`);
-    const verificationToken = await generateToken(email);
-    const link = `http://localhost:3000/api/users/resetpassword/${verificationToken}`
+    const verificationToken = await generateToken(email,'180s');
+    if(!verificationToken){
+      res.status(500).json({message:"Token has been expired"})
+    }
+    const link = `http://localhost:3000/api/users/resetpage/${verificationToken}`
     const templateId = 2
 
     // Send verification email
