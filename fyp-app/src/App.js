@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import theme from './styles/theme'
 import Appbar from './components/appbar'
 import Banner from './components/banner';
+import Login from './features/users/login'
+import Signup from './features/users/signup/signup';
 
 function App() {
   useEffect(()=>{
@@ -23,6 +25,8 @@ function App() {
     <>
     <Appbar/> 
     <Banner/>
+    <Login/>
+    <Signup/>
     </>
     /*
     Appbar
