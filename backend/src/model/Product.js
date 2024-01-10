@@ -8,12 +8,16 @@ const productdb = new Schema(
     description: { type: String, required: true },
     quantity: { type: Number, required: true },
     images: {
-      type: [String],
+      type: String,
       required: true,
     },
     price: { type: Number, required: true },
     // userId:{type:String,required:true},
+    deleted: {
+      type: Boolean,
+    },
   },
+
   { timestamps: true }
 );
 
