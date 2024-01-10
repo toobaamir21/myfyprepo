@@ -14,6 +14,9 @@ import ImageSlider from './features/product/ImageSlider';
 
 
 
+import Banner from './components/banner';
+import Login from './features/users/login'
+import Signup from './features/users/signup/signup';
 
 function App() {
 
@@ -46,6 +49,10 @@ function App() {
          
         </Routes>
       </Router>
+    <Appbar/> 
+    <Banner/>
+    <Login/>
+    <Signup/>
     </>
   );
   }
