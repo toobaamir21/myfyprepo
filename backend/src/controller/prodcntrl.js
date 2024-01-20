@@ -12,30 +12,41 @@ const createProduct = async (req, res) => {
   }
 };
 
-//...........................GETPRODUCTS.........................
+//...........................GETPRODUCTS CATEGORY OR PRODUCTNAME WISE.........................
 const getProducts = async (req, res) => {
   try {
     // const cacheValue = await client.get("prodlist");
     // if (cacheValue) {
-    //   console.log(
-    //     "this is a cacheValue..........................................................................................................................................................................................................................................................................................................................................",
-    //     cacheValue
-    //   );
+    //   console.log("this is a cacheValue/..", cacheValue);
     //   return res.json(JSON.parse(cacheValue));
     // }
 
-    // let products = await Product.find({ deleted: { $ne: true } });
     let query = Product.find({ deleted: { $ne: true } });
 
     if (req.query.category) {
-     
       query = query.find({ category: req.query.category.toString() });
       console.log("this is category", req.query.category);
     }
-     if (req.query._sort && req.query._order) {
-       query = query.sort({ [req.query._sort]: req.query._order });
-     }
-     const doc = await query.exec()
+
+   if (req.query.productName) {
+     const searchTerms = req.query.productName
+       .toLowerCase() // Convert the search string to lowercase
+       .split(" ")
+       .filter((term) => term.trim() !== "");
+      console.log("this is the searchTerms",searchTerms);
+     const regexTerms = searchTerms.map((term) => new RegExp(term, "i"));
+
+     // Use $all to match documents containing all specified terms
+     query = query.find({
+       prodName: { $all: regexTerms.map((term) => new RegExp(term, "i")) },
+     });
+   }
+    
+    if (req.query._sort && req.query._order) {
+      query = query.sort({ [req.query._sort]: req.query._order });
+    }
+
+    const doc = await query.exec();
     // client.set("prodlist", JSON.stringify(doc));
     // client.expire("prodlist", 10);
     res.status(200).json(doc);
@@ -43,6 +54,11 @@ const getProducts = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+
+
+
+
 
 //.........................DELETEPRODUCTS.........................
 const deleteProducts = async (req, res) => {
@@ -60,4 +76,4 @@ const updateProducts = async (req, res) => {
   );
   res.status(200).json(up_product);
 };
-module.exports = { createProduct, getProducts, deleteProducts, updateProducts };
+module.exports = { createProduct, getProducts, deleteProducts, updateProducts};

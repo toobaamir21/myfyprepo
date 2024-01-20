@@ -1,228 +1,307 @@
-// import React, { useEffect, useState } from "react";
-
-// import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
-// import "./Productstyle.css";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useLocation } from "react-router-dom";
-
-// const ImageSlider = () => {
-//   const dispatch = useDispatch();
-//   const { products, loading } = useSelector((state) => state.app);
-//   const location = useLocation();
-//   const searchParams = new URLSearchParams(location.search);
-//   const picId = searchParams.get("picId");
-// const matchedProduct = products.find((product) => product._id === picId);
-// console.log("this is products",products);
-// if (loading) {
-//   return <p>Loading...</p>;
-// }
-
-// if (!matchedProduct) {
-//   return <p>No product found for this ID</p>;
-// }
-// console.log("this is matched products",matchedProduct);
-
-//   // const [current, setCurrent] = useState(0);
-//   // const length = products.images.length;
-//   // const nextSlide = () => {
-//   //   setCurrent(current === length - 1 ? 0 : current + 1);
-//   // };
-
-//   // const prevSlide = () => {
-//   //   setCurrent(current === 0 ? length - 1 : current - 1);
-//   // };
-
-//   // if (!Array.isArray(products.images) || products.images.length <= 0) {
-//   //   return null;
-//   // }
-
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         justifyContent: "space-around",
-//         alignItems: "center",
-//         flexWrap: "wrap",
-//       }}
-//     >
-//       <div>
-//         {/* <FaArrowAltCircleLeft className="left-arrow" onClick={prevSlide} />
-//           <FaArrowAltCircleRight className="right-arrow" onClick={nextSlide} /> */}
-
-//         {matchedProduct && (
-//           <div>
-//             <h1>Product Name: {matchedProduct.name}</h1>
-//             <img
-//               src={matchedProduct.images}
-//               alt="Product Image"
-//               style={{ width: "300px", height: "auto" }}
-//             />
-//           </div>
-//         )}
-//       </div>
-
-//       <div>
-//         <h1>Shawls</h1>
-//         <h1>Shawls</h1>
-//         <h1>Shawls</h1>
-
-//         <h1>Shawls</h1>
-//         <h1>Shawls</h1>
-//       </div>
-//       <div>
-//         <p>kxdnvjkdgnodndd</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ImageSlider;
-
 import React, { useEffect, useState } from "react";
-import { FaArrowAltCircleRight, FaArrowAltCircleLeft, FaMinus, FaPlus } from "react-icons/fa";
 import "./Productstyle.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
-
+import Appbar from "../../components/appbar";
+import {
+  addLength,
+  clearQuantity,
+  createCart,
+  decrement,
+  increment,
+  updateCart,
+} from "../checkout/CartSlice";
+import { Divider } from "@mui/material";
+import {
+  FaTruck,
+  FaMoneyBill,
+  FaRegCreditCard,
+  FaCheckCircle,
+  FaUndoAlt,
+  FaShieldAlt,
+  FaExclamationCircle,
+  FaMapMarker,
+} from "react-icons/fa";
 const ImageSlider = () => {
-  const dispatch = useDispatch();
-  const { products, loading } = useSelector((state) => state.app);
-  console.log("this is products", products);
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const picId = searchParams.get("picId");
-    const [count, setCount] = useState(1);
-  const [matchedProduct, setMatchedProduct] = useState(null);
-  useEffect(() => {
-    if (!loading && products && products.length > 0) {
-      const product = products.find((product) => product._id === picId);
-      setMatchedProduct(product);
-    }
-  }, [loading, products, picId]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!products || products.length === 0) {
-    return <p>No products available</p>;
-  }
-
-  if (!matchedProduct) {
-    return <p>No product found for this ID</p>;
-  }
-
-    const Plus = () => {
-      console.log("-/.", matchedProduct.quantity);
-         if (count < matchedProduct.quantity) {
-           setCount(count + 1);
-         } else {
-           setCount(count);
-         }
+    const dispatch = useDispatch();
+    const { products, loading } = useSelector((state) => state.app);
+    const { quantity, carts } = useSelector((state) => state.cart);
+    console.log("this is products", products);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const picId = searchParams.get("picId");
+    const [showPopup, setShowPopup] = useState(false);
+    const [matchedProduct, setMatchedProduct] = useState(null);
+    const { user } = useSelector((state) => state.user);
+     const [redirectProductId, setRedirectProductId] = useState(null);
     
-    };
 
-    const Minus = () => {
-      if (count==0) {
-        setCount(count)
+    useEffect(() => {
+      dispatch(clearQuantity());
+      if (!loading && products && products.length > 0) {
+        const product = products.find((product) => product._id === picId);
+
+        setMatchedProduct(product);
       }
-      else{ setCount(count - 1);}
-    
-    };
+    }, [loading, products, picId, dispatch]);
+    if (loading) {
+      return <p>Loading...</p>;
+    }
 
+    if (!products || products.length === 0) {
+      return <p>No products available</p>;
+    }
+
+    if (!matchedProduct) {
+      return <p>No product found for this ID</p>;
+    }
+
+    const Buynow = () => {
+      navigate("/checkout");
+    };
+ const CreateCart = (id) => {
+   const isLoggedIn = user !== null;
+   if (!isLoggedIn) {
+     // Save the current product ID in session storage
+     setRedirectProductId(id);
+     navigate("/login");
+     return;
+   }
+
+   const cartexist = carts.find((cart) => cart.product._id === id);
+
+   if (cartexist) {
+     const data = {
+       quantity: cartexist.quantity + quantity,
+       user: user._id,
+       id: cartexist._id,
+     };
+
+     dispatch(updateCart(data))
+       .then(() => {
+         console.log("Product quantity updated successfully");
+         showPopupMessage();
+         dispatch(addLength());
+       })
+       .catch((error) => {
+         console.error("Error updating product quantity:", error);
+       });
+   } else {
+     const data = {
+       quantity: quantity,
+       product: matchedProduct._id,
+       user: user._id,
+     };
+
+     dispatch(createCart(data))
+       .then(() => {
+         console.log("Product added to cart successfully");
+         showPopupMessage();
+         dispatch(addLength());
+       })
+       .catch((error) => {
+         console.error("Error adding product to cart:", error);
+       });
+   }
+
+   // If the user is logged in, navigate back to the product page
+   // after performing the necessary actions (updateCart or createCart)
+ if (isLoggedIn && redirectProductId) {
+      navigate(`/products?picId=${redirectProductId}`);
+      setRedirectProductId(null); // Reset the state variable after navigating
+    }
+  
+ };
+    // const CreateCart = (id) => {
+    //   const isLoggedIn = user !== null;
+    //   if (!isLoggedIn) {
+    //     navigate("/login");
+    //     return; 
+    //   }
+
+    //   const cartexist = carts.find((cart) => cart.product._id === id);
+
+    //   if (cartexist) {
+        
+    //     const data = {
+    //       quantity: cartexist.quantity + quantity,
+    //       user: user._id,
+    //       id: cartexist._id,
+    //     };
+
+     
+    //     dispatch(updateCart(data))
+    //       .then(() => {
+    //         console.log("Product quantity updated successfully");
+    //         showPopupMessage();
+    //         dispatch(addLength());
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error updating product quantity:", error);
+    //       });
+    //   } else {
+        
+    //     const data = {
+    //       quantity: quantity,
+    //       product: matchedProduct._id,
+    //       user: user._id,
+    //     };
+
+        
+    //     dispatch(createCart(data))
+    //       .then(() => {
+    //         console.log("Product added to cart successfully");
+    //         showPopupMessage();
+    //         dispatch(addLength());
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error adding product to cart:", error);
+    //       });
+    //   }
+    // };
+
+
+   const capitalizeWords = (str) => {
+     return str.replace(/\b\w/g, (char) => char.toUpperCase());
+   };
+    const showPopupMessage = () => {
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 700);
+    };
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
+      <Appbar />
+      <div className="parentdiv">
+        <div className="child1">
           <img
             src={matchedProduct.images}
-            alt="Product Image"
-            style={{ width: "300px", height: "auto" }}
+            alt="Product pic"
+            style={{ objectFit: "fill", width: "25vw", height: "auto" }}
           />
-          <div style={{ marginLeft: "20px" }}>
-            <h1>{matchedProduct.prodName}</h1>
-            <h2>{matchedProduct.description}</h2>
-            <h3>Rs:{matchedProduct.price}/-</h3>
-            <div>
-              <p>
-                Quantity
-                <button
-                  onClick={Minus}
-                  style={{
-                    width: "2vw",
-                    height: "3vh",
-                    cursor: "pointer",
-                    border: ".5px solid black",
-                    marginLeft: "1vw",
-                    marginRight: "1vw",
-                  }}
-                >
-                  -
-                </button>
-                {count}
-                <button
-                  onClick={Plus}
-                  style={{
-                    width: "2vw",
-                    height: "3vh",
-                    cursor: "pointer",
-                    border: ".5px solid black",
-                    marginLeft: "1vw",
-                  }}
-                >
-                  +
-                </button>
-              </p>
-            </div>
+        </div>
+        <div className="child2">
+          <h1>{capitalizeWords(matchedProduct.prodName)}</h1>
+          <h2>{matchedProduct.description}</h2>
+          <p>Brand By: Artist Name</p>
+          <Divider
+            orientation="vertical"
+            flexItem
+            style={{ border: "0.1px solid lightgray" }}
+          />
+          <h3>Rs:{matchedProduct.price}/-</h3>
 
-            <div>
-              <button
-                style={{
-                  width: "10vw",
-                  height: "8vh",
-                  marginRight: ".5vw",
-                  background: "lightgreen",
-                  border: "0px",
-                  cursor: "pointer",
-                  boxShadow: "2px 2px 4px  gray",
-                }}
-              >
-                Buy Now
-              </button>
-              <button
-                style={{
-                  width: "10vw",
-                  height: "8vh",
-                  marginLeft: ".5vw",
-                  background: "lightblue",
-                  border: "0px ",
-                  cursor: "pointer",
-                  boxShadow: "2px 2px 4px  gray",
-                }}
-              >
-                Add to Cart
-              </button>
-            </div>
+          <p>
+            Quantity
+            <button
+              //onClick={Minus}
+              onClick={() => {
+                if (quantity > 0) {
+                  dispatch(decrement());
+                }
+              }}
+              style={{
+                width: "2vw",
+                height: "3vh",
+                cursor: "pointer",
+                border: ".5px solid black",
+                marginLeft: "1vw",
+                marginRight: "1vw",
+              }}
+            >
+              -
+            </button>
+            {/* {count} */}
+            {quantity}
+            <button
+              // onClick={Plus}
+              onClick={() => {
+                if (quantity < matchedProduct.quantity) {
+                  dispatch(increment());
+                }
+              }}
+              style={{
+                width: "2vw",
+                height: "3vh",
+                cursor: "pointer",
+                border: ".5px solid black",
+                marginLeft: "1vw",
+              }}
+            >
+              +
+            </button>
+          </p>
+          <div className="btn-div">
+            <button className="btn-style" onClick={Buynow}>
+              Buy Now
+            </button>
+            <button
+              className="btn-style two"
+              onClick={() => CreateCart(matchedProduct._id)}
+            >
+              Add to Cart
+            </button>
           </div>
+          {showPopup ? (
+            <div
+              style={{
+                marginTop: "1vh",
+                width: "100%",
+                padding: "1vw",
+                background: "lightgreen",
+                border: "1px solid green",
+              }}
+            >
+              Item is added to cart!
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="child3">
+          <h4>Delivery</h4>
+          <p>
+            <FaMapMarker style={{ marginRight: ".5vw" }} />
+            Deliver to all cities of Pakistan
+          </p>
+          <p>
+            <FaTruck style={{ marginRight: ".5vw" }} /> Standard Delivery
+            Charges: Rs: 120/-
+          </p>
+          <p>
+            <FaCheckCircle style={{ marginRight: ".5vw" }} /> Free Delivery: On
+            Events
+          </p>
+          <h4>Payment</h4>
+          <p>
+            <FaMoneyBill style={{ marginRight: ".5vw" }} /> Cash On Delivery is
+            available
+          </p>
+          <p>
+            <FaRegCreditCard style={{ marginRight: ".5vw" }} /> Online payment
+            available
+          </p>
+          <h4>Service</h4>
+          <p>
+            <FaShieldAlt style={{ marginRight: ".5vw" }} /> 100% Authentic from
+            Trusted Brand
+          </p>
+          <p>
+            <FaUndoAlt style={{ marginRight: ".5vw" }} /> 14 days free & easy
+            return
+          </p>
+          <p>
+            <FaExclamationCircle style={{ marginRight: "1vw" }} />
+            Warranty not available
+          </p>
         </div>
       </div>
-      
+      <Footer />
     </>
   );
-};
+}
 
-export default ImageSlider;
+export default ImageSlider

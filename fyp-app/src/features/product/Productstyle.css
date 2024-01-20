@@ -1,49 +1,65 @@
-.slider {
-    position: relative;
-    height: 100vh;
+
+
+ .parentdiv{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    margin-top: -15vh;
-}
+    width: 94%;
+    height: 100vh;
+    padding:3%;
+    background-color: #e3e2e2;
+ }
+ .child1{
+    /* background-color: green; */
+    width: 30vw;
+    height: 100%;
+    padding: 2vw;
+    background-color: white;
 
-.image {
-    width: 400px;
-    height: 300px;
-    border-radius: 10px;
-}
+ }
+ .child2 {
+     /* background-color: pink; */
+     width: 40vw;
+    height: 100%;
+    padding: 2vw;
+    background-color: white;
+     
 
-.right-arrow {
-    position: absolute;
-    top: 80%;
-    right: 10%;
-    font-size: 3rem;
-    color: #000;
-    z-index: 10;
-    cursor: pointer;
-    user-select: none;
-}
+ }
+ .child3 {
+     /* background-color: blue; */
+     width: 30vw;
+    height: 100%;
+    padding: 2vw;
+    background-color: #f0f0f0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+   
 
-.left-arrow {
-    position: absolute;
-    top: 80%;
-    left: 10%;
-    font-size: 3rem;
-    color: #000;
-    z-index: 10;
-    cursor: pointer;
-    user-select: none;
-}
+ }
 
-.slide {
-    opacity: 0;
-    transition-duration: 1s ease;
-}
+ 
 
-.slide.active {
-    opacity: 1;
-    transition-duration: 1s;
-    transform: scale(1.08);
-    
-}
+ .btn-div{
+    margin-top: 6vh;
+ }
+ .btn-style{
+            width: 40%;
+            padding: 1vw;
+            margin-right: .5vw;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: white;
+ }
+  .two{
+      background-color: skyblue;
+  }
 
+  .btn-style:hover{
+    background:#45a049 ;
+  }
+  .two:hover{
+    background-color: rgb(126, 214, 249);
+  }

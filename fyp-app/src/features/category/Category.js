@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Banner from "../../components/banner";
 import Footer from "../../components/Footer";
+import Appbar from "../../components/appbar";
 
 
 
@@ -41,14 +42,7 @@ export function Category() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      {/* <AppBar position="relative">
-        <Toolbar>
-          <CameraIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Album layout
-          </Typography>
-        </Toolbar>
-      </AppBar> */}
+     
       <main>
         <ThemeProvider theme={theme}>
           <Container
@@ -59,10 +53,9 @@ export function Category() {
           >
             {
               <>
-                
+                <Appbar />
                 <Banner />
               </>
-              
             }
           </Container>
         </ThemeProvider>
@@ -141,7 +134,7 @@ export function Category() {
           </Grid>
         </Container>
       </main>
-     <Footer/>
+      <Footer />
     </ThemeProvider>
   );
 }

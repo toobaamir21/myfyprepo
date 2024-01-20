@@ -1,19 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "./ProdSlice";
+import { getProducts, getallProducts } from "./ProdSlice";
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link, useLocation } from "react-router-dom";
@@ -21,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { clearProducts } from "./ProdSlice";
 import Footer from "../../components/Footer";
 import Appbar from "../../components/appbar";
+import { CircularProgress } from "@mui/material";
 
 
 const defaultTheme = createTheme();
@@ -28,66 +23,40 @@ export function Product() {
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.app);
    const location = useLocation();
-  // console.log("this is products",products[0].prodName);
  useEffect(() => {
    const searchParams = new URLSearchParams(location.search);
    const category = searchParams.get("category");
-   
-   console.log("this is category",category);
+   const productName = searchParams.get("productName");
 
    try {
-      dispatch(clearProducts());
-     dispatch(getProducts(category)); 
+     dispatch(clearProducts());
+
+     if (category) {
+       dispatch(getProducts({ category }));
+     } else if (productName) {
+       dispatch(getProducts({ productName }));
+     }
    } catch (error) {
      console.log(error.message);
    }
  }, [location.search, dispatch]);
 
-
+const capitalizeWords = (str) => {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+if (loading) {
+  return (
+    <CircularProgress
+      style={{ position: "absolute", top: "50%", left: "50%" }}
+    />
+  );
+}
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
-        {/* Hero unit */}
-        {/* <Box
-          sx={{
-            bgcolor: "background.paper",
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Album layout
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="text.secondary"
-              paragraph
-            >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
-            </Typography>
-            <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack>
-          </Container>
-        </Box> */}
+        <Appbar />
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
@@ -117,7 +86,7 @@ export function Product() {
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="h2">
-                        {product.prodName}
+                        {capitalizeWords(product.prodName)}
                       </Typography>
                       <Typography>{product.description}</Typography>
                     </CardContent>

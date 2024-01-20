@@ -35,14 +35,15 @@ const verifyEmailAndSavesDataToDb = async (req, res) => {
         if (data) {
           const deleteFromRedis = await client.getdel(token);
           console.log(`deleted : ${deleteFromRedis}`);
-          res.status(201).json({
-            fname: data.fname,
-            lname: data.lname,
-            phone: data.phone,
-            role: data.role,
-            email: data.email,
-            accessToken: await generateToken(data._id),
-          });
+          // res.status(201).json({
+          //   fullname: data.fullname,
+          //   phone: data.phone,
+          //   role: data.role,
+          //   email: data.email,
+          //   accessToken: await generateToken(data._id),
+          // });
+            res.status(200).send("Registration successful. Redirecting to the home page...");
+             
         } else {
           res.status(500).json({ msg: "Error Occured in create user in db" });
         }
@@ -69,12 +70,12 @@ const authUser = async (req, res) => {
       const data = await User.findOne({ email });
       if (data && (await data.matchPassword(password))) {
         res.status(200).json({
-          fname: data.fname,
-          lname: data.lname,
+          _id:data._id,
+          fullname: data.fullname,
           phone: data.phone,
           role: data.role,
           email: data.email,
-          accessToken: await generateToken(data._id),
+          accessToken: generateToken(data._id),
         });
       } else {
         res.status(404).json({ msg: "Email or Password is not correct" });
@@ -121,10 +122,20 @@ const handleReset = async (req, res) => {
   }
 };
 
+const fetchUsers = async (req, res) => {
+  try {
+    const doc = await User.find();
+    res.status(200).json(doc);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
 module.exports = {
   emailConfirmation,
   verifyEmailAndSavesDataToDb,
   authUser,
   forgetPassword,
   handleReset,
+  fetchUsers,
 };

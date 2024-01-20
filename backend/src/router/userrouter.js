@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {emailConfirmation,verifyEmailAndSavesDataToDb,authUser,forgetPassword,handleReset} = require('../controller/userController')
+const {emailConfirmation,verifyEmailAndSavesDataToDb,authUser,forgetPassword,handleReset, fetchUsers} = require('../controller/userController')
 
 
 /*****************Route for email confirmation ************************/
@@ -17,6 +17,6 @@ router.route('/forgotpass').post(forgetPassword)
 
 /*****************Route for reset password ************************/
 router.route('/resetpassword/:token').get(handleReset)//it will be change to post
-
+router.get("/fetchUsers",fetchUsers)
 
 module.exports = router

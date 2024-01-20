@@ -49,7 +49,7 @@ const sendsEmail = async (UserData, res) => {
     const email = UserData.email;
     const verificationToken = await generateToken(email);
     client.setex(verificationToken, 30000, JSON.stringify({ UserData }));
-    const link = `http://localhost:3000/api/users/verifyemail/${verificationToken}`
+    const link = `http://localhost:8000/api/users/verifyemail/${verificationToken}`
     const templateId = 1
 
     // Send verification email
@@ -68,7 +68,7 @@ const sendsResetPassword = async (UserData, res) => {
     const email = UserData.email;
     console.log(`testing : ${email}`);
     const verificationToken = await generateToken(email);
-    const link = `http://localhost:3000/api/users/resetpassword/${verificationToken}`
+    const link = `http://localhost:8000/api/users/resetpassword/${verificationToken}`
     const templateId = 2
 
     // Send verification email
