@@ -7,6 +7,17 @@ const productdb = new Schema(
     category: { type: String, required: true },
     description: { type: String, required: true },
     quantity: { type: Number, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+      required: true,
+    },
     images: {
       type: String,
       required: true,

@@ -114,6 +114,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearLength } from "../../features/checkout/CartSlice";
+import { clearUser } from "../../features/users/UserSlice";
 
 export default function Actions({ matches }) {
   const Component = matches
@@ -129,9 +130,15 @@ export default function Actions({ matches }) {
     dispatch(clearLength());
   };
 
-  const handleModalOpen = () => {
-    setOpenModal(true);
-  };
+    const handlePersonIconClick = () => {
+      if (user) {
+        setOpenModal(true);
+      } else {
+        navigate("/login");
+      }
+    };
+
+
 
   const handleModalClose = () => {
     setOpenModal(false);
@@ -139,6 +146,7 @@ export default function Actions({ matches }) {
 
   const handleLogout = () => {
       localStorage.removeItem("userInfo");
+     dispatch(clearUser())
       navigate("/login")
     handleModalClose();
   };
@@ -206,7 +214,7 @@ export default function Actions({ matches }) {
             sx={{
               justifyContent: "center",
             }}
-            onClick={handleModalOpen}
+            onClick={handlePersonIconClick}
           >
             <ListItemIcon
               sx={{

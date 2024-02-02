@@ -1,5 +1,3 @@
-
-
  .parentdiv{
     display: flex;
     justify-content: space-around;
@@ -23,8 +21,6 @@
     height: 100%;
     padding: 2vw;
     background-color: white;
-     
-
  }
  .child3 {
      /* background-color: blue; */
@@ -36,9 +32,13 @@
    
 
  }
-
  
-
+/* .chat {
+   position: absolute;
+   bottom: 70px;
+   right: 70px;
+   background: pink;
+} */
  .btn-div{
     margin-top: 6vh;
  }
@@ -46,7 +46,7 @@
             width: 40%;
             padding: 1vw;
             margin-right: .5vw;
-            background-color: #4caf50;
+            background-color: #d1adcc;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
@@ -54,12 +54,12 @@
             color: white;
  }
   .two{
-      background-color: skyblue;
+      background-color: #b986b2;
   }
 
   .btn-style:hover{
-    background:#45a049 ;
+    background-color: #dbb3d6;
   }
   .two:hover{
-    background-color: rgb(126, 214, 249);
+    background-color: #b383ac;
   }

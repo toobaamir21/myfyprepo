@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCart, fetchCart } from "./CartSlice";
 import { FaTrash } from "react-icons/fa";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddToCart = () => {
   const { carts, loading } = useSelector((state) => state.cart);
@@ -14,6 +14,7 @@ const AddToCart = () => {
   const [quantityArray, setQuantityArray] = useState([]);
    const [selectedItems, setSelectedItems] = useState([]);
   const dispatch = useDispatch();
+  const navigate=useNavigate()
 
   useEffect(() => {
     try {
@@ -99,7 +100,9 @@ const AddToCart = () => {
     return { totalQuantity, totalPrice, standardDeliveryFee };
   };
 
-  
+  const checkout=()=>{
+    navigate("/checkout");
+  }
   if (loading) {
     return (
       <CircularProgress
@@ -263,7 +266,7 @@ const AddToCart = () => {
                     : "Rs: 0/-"}
                 </span>
               </div>
-              <button className="checkout-btn">Proceed To Checkout</button>
+              <button onClick={checkout} className="checkout-btn">Proceed To Checkout</button>
             </div>
           </div>
         </>

@@ -41,6 +41,14 @@ export function Product() {
    }
  }, [location.search, dispatch]);
 
+ if (loading) {
+   return (
+     <CircularProgress
+       style={{ position: "absolute", top: "50%", left: "50%" }}
+     />
+   );
+ }
+
 const capitalizeWords = (str) => {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 };

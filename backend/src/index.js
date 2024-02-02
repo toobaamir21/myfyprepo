@@ -8,6 +8,10 @@ const userRouter = require("./router/userrouter");
 const cartRouter = require("./router/cartrouting");
 const orderRouter = require("./router/orderrouting");
 const categoryRouter = require("./router/ctgryrouting");
+const reviewRouter = require("./router/reviewrouting");
+const chatRouter = require("./router/chatrouting");
+
+
 
 
 app.use(express.json());
@@ -17,6 +21,9 @@ app.use("/api/users", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api/chat", chatRouter);
+
 
 app.listen(port, () => {
   console.log("listening to port ", port);

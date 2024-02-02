@@ -2,13 +2,11 @@ import { IconButton, ListItemButton, ListItemIcon, ListItemText } from "@mui/mat
 import {AppbarContainer, AppbarHeader, MyList } from "../../styles/appbar";
 import SearchIcon from "@mui/icons-material/Search";
 import Actions from "./actions";
-import { useEffect, useState } from "react";
-import { searchProduct } from "../../features/product/ProdSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 export default function AppbarDesktop({matches}){
    const [searchData, setSearchData] = useState("");
-   const dispatch = useDispatch()
+   
    const navigate = useNavigate()
    
    const handleSearch = (searchData) => {
@@ -42,7 +40,7 @@ export default function AppbarDesktop({matches}){
               </form>
               <IconButton
                 onClick={() => handleSearch(searchData)}
-                style={{ padding: ".6vw" }}
+                style={{ padding: ".6vw", background: "#d1adcc" }}
               >
                 <SearchIcon />
               </IconButton>

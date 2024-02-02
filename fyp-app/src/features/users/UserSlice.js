@@ -32,23 +32,7 @@ export const confirmEmail = createAsyncThunk(
   }
 );
 
-export const registration = createAsyncThunk(
-  "registration",
-  async (token, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`/api/users/verifyemail/:${token}`);
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage);
-      }
-      const result = await response.json();
-      localStorage.setItem("userInfo", JSON.stringify(result));
-      return result;
-    } catch (error) {
-      return rejectWithValue({ message: error.message });
-    }
-  }
-);
+
 
 export const authUser = createAsyncThunk(
   "authUser",
@@ -85,7 +69,11 @@ export const UserSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearUser:(state)=>{
+      state.user=null
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(confirmEmail.pending, (state) => {
@@ -113,5 +101,6 @@ export const UserSlice = createSlice({
       });
   },
 });
+export const { clearUser } = UserSlice.actions;
 
 export default UserSlice.reducer;

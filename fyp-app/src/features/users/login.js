@@ -24,7 +24,14 @@ const Login=()=>{
         password,
       })
     );
-    navigate("/");
+    const redirectAfterLogin = sessionStorage.getItem("redirectAfterLogin");
+    if (redirectAfterLogin) {
+      navigate(redirectAfterLogin);
+      sessionStorage.removeItem("redirectAfterLogin");
+    } else {
+      // Redirect to home or another default page
+      navigate("/");
+    }
   };
     return (
       <Grid>

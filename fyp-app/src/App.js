@@ -11,6 +11,9 @@ import AddToCart from './features/checkout/AddToCart';
 import Signup from './features/users/signup';
 import ConfirmPage from './page/ConfirmPage';
 import { useSelector } from 'react-redux';
+import Review from './features/review/Review';
+import Chat from './components/chat/Chat';
+
 
 function App() {
  const { user } = useSelector((state) => state.user);
@@ -32,11 +35,8 @@ function App() {
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/checkout" element={<Checkout />} />
 
-          <Route
-            exact
-            path="/cart"
-            element={<AddToCart /> }
-          />
+          <Route exact path="/cart" element={<AddToCart />} />
+          <Route exact path="/chat" element={<Chat />} />
         </Routes>
       </Router>
     </>

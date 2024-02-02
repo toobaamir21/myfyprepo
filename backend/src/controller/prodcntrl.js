@@ -56,8 +56,19 @@ const getProducts = async (req, res) => {
 };
 
 
-
-
+//--------------------GET PRODUCTS BY ARTIST---------------
+ const getProductsByArtist = async (req, res) => {
+  try {
+    const {user} = req.query
+    let doc = await Product.find({ user: user }).populate({
+      path: "user",
+      select: "-password",
+    });;
+    res.status(200).json(doc);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 
 //.........................DELETEPRODUCTS.........................
@@ -76,4 +87,4 @@ const updateProducts = async (req, res) => {
   );
   res.status(200).json(up_product);
 };
-module.exports = { createProduct, getProducts, deleteProducts, updateProducts};
+module.exports = { createProduct, getProducts, deleteProducts, updateProducts,getProductsByArtist};
