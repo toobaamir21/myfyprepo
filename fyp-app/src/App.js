@@ -13,6 +13,11 @@ import ConfirmPage from './page/ConfirmPage';
 import { useSelector } from 'react-redux';
 import Review from './features/review/Review';
 import Chat from './components/chat/Chat';
+import Create from './features/artist/product/Create';
+import Read from './features/artist/product/Read';
+import Update from './features/artist/product/Update';
+import ArtistProfile from './features/artist/ArtistProfile';
+
 
 
 function App() {
@@ -37,6 +42,10 @@ function App() {
 
           <Route exact path="/cart" element={<AddToCart />} />
           <Route exact path="/chat" element={<Chat />} />
+          <Route exact path="/create" element={<Create />} />
+          <Route exact path="/update" element={<Update />} />
+          <Route exact path="/read" element={<Read/>} />
+          <Route exact path="/artistprofile" element={<ArtistProfile/>} />
         </Routes>
       </Router>
     </>

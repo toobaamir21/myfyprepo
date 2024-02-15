@@ -16,23 +16,57 @@ const Login=()=>{
    const [password, setPassword] = useState("");
    const dispatch = useDispatch()
    const navigate = useNavigate()
-  const handleSubmit = (e) => {
+   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(
-      authUser({
-        email,
-        password,
-      })
-    );
-    const redirectAfterLogin = sessionStorage.getItem("redirectAfterLogin");
-    if (redirectAfterLogin) {
-      navigate(redirectAfterLogin);
-      sessionStorage.removeItem("redirectAfterLogin");
-    } else {
-      // Redirect to home or another default page
-      navigate("/");
-    }
-  };
+    dispatch(authUser({ email, password }))
+        .then(() => {
+            // Fetch userInfo from localStorage
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const redirectAfterLogin = sessionStorage.getItem("redirectAfterLogin");
+            if (userInfo && userInfo.role === 'sellar') {
+                navigate('/artistprofile');
+            } else if (userInfo && userInfo.role === 'customer') {
+                if (redirectAfterLogin) {
+                    navigate(redirectAfterLogin);
+                    sessionStorage.removeItem("redirectAfterLogin");
+                }
+            } else {
+                navigate("/");
+            }
+        })
+        .catch(error => {
+            console.error("Authentication failed:", error);
+            // Handle authentication failure (e.g., display error message)
+        });
+};
+
+
+
+  // const handleSubmit = (e) => {
+
+  //   e.preventDefault();
+  //   dispatch(
+  //     authUser({
+  //       email,
+  //       password,
+  //     })
+  //   );
+  //   const redirectAfterLogin = sessionStorage.getItem("redirectAfterLogin");
+  // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  //   console.log('userInfo',userInfo);
+  //   if(userInfo.role === 'sellar'){
+  //     navigate('/artistprofile')
+  //   }else if(userInfo.role === 'customer'){
+
+  //     if (redirectAfterLogin) {
+  //       navigate(redirectAfterLogin);
+  //       sessionStorage.removeItem("redirectAfterLogin");
+  //   }
+  //   } else {
+  //     // Redirect to home or another default page
+  //     navigate("/");
+  //   }
+  // };
     return (
       <Grid>
         <Paper elevation={10} style={paperStyle}>
